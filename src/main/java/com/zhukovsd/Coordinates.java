@@ -42,4 +42,9 @@ public class Coordinates {
         result = 31 * result + rank.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return file + String.valueOf(rank);
+    }
 }

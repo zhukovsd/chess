@@ -1,5 +1,9 @@
 package com.zhukovsd;
 
+import com.zhukovsd.board.Board;
+import com.zhukovsd.board.BoardFactory;
+import com.zhukovsd.board.Move;
+import com.zhukovsd.piece.King;
 import com.zhukovsd.piece.Piece;
 
 import java.util.Scanner;
@@ -90,11 +94,36 @@ public class InputCoordinates {
         }
     }
 
-    public static void main(String[] args) {
-        Board board = new Board();
-        board.setupDefaultPiecesPositions();
+    public static Move inputMove(Board board, Color color, BoardConsoleRenderer renderer) {
+        while (true) {
+            // input
+            Coordinates sourceCoordinates = InputCoordinates.inputPieceCoordinatesForColor(
+                    color, board
+            );
 
-        Coordinates coordinates = inputPieceCoordinatesForColor(Color.WHITE, board);
-        System.out.println(coordinates);
+            Piece piece = board.getPiece(sourceCoordinates);
+            Set<Coordinates> availableMoveSquares = piece.getAvailableMoveSquares(board);
+
+            renderer.render(board, piece);
+            Coordinates targetCoordinates = InputCoordinates.inputAvailableSquare(availableMoveSquares);
+
+            Move move = new Move(sourceCoordinates, targetCoordinates);
+
+            if (validateIfKingInCheckAfterMove(board, color, move)) {
+                System.out.println("Your king is under attack!");
+                continue;
+            }
+
+            return move;
+        }
+    }
+
+    private static boolean validateIfKingInCheckAfterMove(Board board, Color color, Move move) {
+        Board copy = (new BoardFactory()).copy(board);
+        copy.makeMove(move);
+
+        // we trust that there is king on the board
+        Piece king = copy.getPiecesByColor(color).stream().filter(piece -> piece instanceof King).findFirst().get();
+        return copy.isSquareAttackedByColor(king.coordinates, color.opposite());
     }
 }

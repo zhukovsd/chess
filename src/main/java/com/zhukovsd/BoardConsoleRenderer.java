@@ -1,5 +1,6 @@
 package com.zhukovsd;
 
+import com.zhukovsd.board.Board;
 import com.zhukovsd.piece.Piece;
 
 import java.util.Set;

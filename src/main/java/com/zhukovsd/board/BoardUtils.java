@@ -1,4 +1,7 @@
-package com.zhukovsd;
+package com.zhukovsd.board;
+
+import com.zhukovsd.Coordinates;
+import com.zhukovsd.File;
 
 import java.util.ArrayList;
 import java.util.List;
